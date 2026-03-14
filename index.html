@@ -1,81 +1,103 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resonance — Music Player</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-struct Song {
-    char name[50];
-    struct Song *prev;
-    struct Song *next;
-};
+  <!-- Professional background layers -->
+  <div id="bg-base"></div>
+  <div id="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+    <div class="orb orb-5"></div>
+  </div>
+  <div id="bg-grid"></div>
+  <div id="bg-scanlines"></div>
+  <div id="bg-vignette"></div>
+  <div id="bg-streak"></div>
 
-struct Song *head = NULL;
-struct Song *tail = NULL;
-struct Song *current = NULL;
+  <!-- Main App -->
+  <div class="app">
 
-void addSong(char name[]) {
-    struct Song *newSong = (struct Song*)malloc(sizeof(struct Song));
-    strcpy(newSong->name, name);
-    newSong->next = NULL;
-    newSong->prev = NULL;
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">
+        RESONANCE
+        <span>music player</span>
+      </div>
+      <div class="track-count" id="trackCount">0 TRACKS</div>
+    </div>
 
-    if(head == NULL) {
-        head = tail = newSong;
-    } else {
-        tail->next = newSong;
-        newSong->prev = tail;
-        tail = newSong;
-    }
-}
+    <!-- Now Playing Card -->
+    <div class="now-playing" id="nowPlaying">
+      <div class="np-label">NOW PLAYING</div>
+      <div class="album-art" id="albumArt">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"/>
+          <circle cx="12" cy="12" r="3"/>
+          <line x1="12" y1="2" x2="12" y2="9"/>
+        </svg>
+      </div>
+      <div class="song-title" id="songTitle">—</div>
+      <div class="singer-name" id="singerName">—</div>
+      <div class="song-status">
+        <span class="status-dot"></span>
+        <span id="statusText">SELECT A TRACK</span>
+      </div>
+      <div class="progress-area">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="time-labels"><span>0:00</span><span>3:45</span></div>
+      </div>
 
-void playNext() {
-    if(current == NULL)
-        current = head;
-    else if(current->next != NULL)
-        current = current->next;
-    else {
-        printf("Already at last song\n");
-        return;
-    }
+      <!-- Controls -->
+      <div class="controls">
+        <button class="ctrl-btn" title="Previous" onclick="playPrevious()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/>
+          </svg>
+        </button>
+        <button class="ctrl-btn primary" title="Play/Pause" onclick="togglePlay()">
+          <svg id="playIcon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </button>
+        <button class="ctrl-btn" title="Next" onclick="playNext()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 18l8.5-6L6 6v12zm2.5-6 5.5 4V8l-5.5 4zm7.5 6h2V6h-2v12z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
 
-    printf("Playing: %s\n", current->name);
-}
+    <!-- Playlist -->
+    <div class="playlist-section">
+      <div class="playlist-header">
+        <div class="playlist-title">PLAYLIST</div>
+        <div class="add-song-area">
+          <input class="add-input" id="newSongInput" type="text" placeholder="Song name..." maxlength="48"
+            onkeydown="if(event.key==='Enter') addSongFromInput()"/>
+          <input class="add-input" id="newSingerInput" type="text" placeholder="Singer..." maxlength="40"
+            onkeydown="if(event.key==='Enter') addSongFromInput()"/>
+          <button class="add-btn" onclick="addSongFromInput()">+ ADD</button>
+        </div>
+      </div>
+      <div class="songs-list" id="songsList"></div>
+    </div>
 
-void playPrevious() {
-    if(current == NULL)
-        current = head;
-    else if(current->prev != NULL)
-        current = current->prev;
-    else {
-        printf("Already at first song\n");
-        return;
-    }
+    <!-- Log message -->
+    <div class="log-area" id="logArea"></div>
 
-    printf("Playing: %s\n", current->name);
-}
+  </div><!-- /.app -->
 
-void showPlaylist() {
-    struct Song *temp = head;
-    printf("Playlist:\n");
-    while(temp != NULL) {
-        printf("%s\n", temp->name);
-        temp = temp->next;
-    }
-}
-
-int main() {
-    addSong("Song1");
-    addSong("Song2");
-    addSong("Song3");
-    addSong("Song4");
-
-    showPlaylist();
-
-    printf("\n--- Music Slider ---\n");
-    playNext();
-    playNext();
-    playNext();
-    playPrevious();
-    playPrevious();
-
-    return 0;
-} 
+  <script src="script.js"></script>
+</body>
+</html>
