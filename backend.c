@@ -78,4 +78,4 @@ int main() {
     playPrevious();
 
     return 0;
-} 
+}
